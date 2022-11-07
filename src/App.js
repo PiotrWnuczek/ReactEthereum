@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter, Routes } from 'react-router-dom';
+import { Route, Navigate } from 'react-router-dom';
+import { createTheme } from '@mui/material/styles';
+import { grey, blueGrey } from '@mui/material/colors';
+import { ThemeProvider } from '@mui/material';
+import PaymentsView from 'components/PaymentsView';
 
-function App() {
+const App = () => {
+  const theme = createTheme({
+    typography: { fontFamily: 'Lato' },
+    palette: { secondary: { light: grey[50], main: grey[100], dark: blueGrey[50] } },
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <ThemeProvider theme={theme}>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
+        <Routes>
+          <Route path='/*' element={<Navigate to='/payments' />} />
+          <Route path='/payments' element={<PaymentsView />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
+  )
+};
 
 export default App;
