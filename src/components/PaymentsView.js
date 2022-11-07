@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Typography, Alert } from '@mui/material';
-import { Button, TextField } from '@mui/material';
+import { Box, Typography, Card } from '@mui/material';
+import { Alert, Button, TextField } from '@mui/material';
 import { Formik } from 'formik';
 import { ethers } from 'ethers';
 import MainLayout from 'components/MainLayout';
 
 const PaymentsView = () => {
-  const [error, setError] = useState();
+  const [error, setError] = useState(null);
   const [payments, setPayments] = useState([]);
 
   const startPayment = async ({ ether, address }) => {
@@ -36,71 +36,77 @@ const PaymentsView = () => {
         >
           Payments
         </Typography>
-        <Formik
-          initialValues={{ address: '', ether: '' }}
-          onSubmit={(values) => {
-            values.address && values.ether ? startPayment({
-              address: values.address,
-              ether: values.ether,
-            }) : setError('Wrong form values.');
-          }}
+        <Card
+          sx={{ p: 2, my: 2, bgcolor: 'secondary.light', borderRadius: 2 }}
+          variant='outlined'
         >
-          {({ values, handleChange, handleSubmit }) => (
-            <form onSubmit={handleSubmit} id='confirm' autoComplete='off'>
-              <TextField
-                sx={{ my: 1 }}
-                onChange={handleChange}
-                value={values.address}
-                name='address'
-                placeholder='Address'
-                label='Address'
-                type='text'
-                variant='outlined'
-                size='small'
-                fullWidth
-                autoFocus
-                required
-              />
-              <TextField
-                sx={{ my: 1 }}
-                onChange={handleChange}
-                value={values.ether}
-                name='ether'
-                placeholder='Ether'
-                label='Ether'
-                type='text'
-                variant='outlined'
-                size='small'
-                fullWidth
-                required
-              />
-            </form>
-          )}
-        </Formik>
-        <Button
-          sx={{ my: 1 }}
-          type='submit'
-          form='confirm'
-          variant='contained'
-          size='small'
-        >
-          Pay Now
-        </Button>
-        {error && <Alert
-          sx={{ my: 1 }}
-          severity='error'
-        >
-          {error}
-        </Alert>}
-        {payments.map(payment =>
-          <Alert
-            sx={{ my: 1, wordBreak: 'break-all' }}
-            key={payment.hash}
-            severity='info'
+          <Formik
+            initialValues={{ address: '', ether: '' }}
+            onSubmit={(values) => {
+              setError(null);
+              values.address && values.ether ? startPayment({
+                address: values.address,
+                ether: values.ether,
+              }) : setError('Wrong form values.');
+            }}
           >
-            {payment.hash}
-          </Alert>
-        )}
+            {({ values, handleChange, handleSubmit }) => (
+              <form onSubmit={handleSubmit} id='pay' autoComplete='off'>
+                <TextField
+                  sx={{ my: 1 }}
+                  onChange={handleChange}
+                  value={values.address}
+                  name='address'
+                  placeholder='Address'
+                  label='Address'
+                  type='text'
+                  variant='outlined'
+                  size='small'
+                  fullWidth
+                  required
+                  autoFocus
+                />
+                <TextField
+                  sx={{ my: 1 }}
+                  onChange={handleChange}
+                  value={values.ether}
+                  name='ether'
+                  placeholder='Ether'
+                  label='Ether'
+                  type='text'
+                  variant='outlined'
+                  size='small'
+                  fullWidth
+                  required
+                />
+              </form>
+            )}
+          </Formik>
+          <Button
+            sx={{ my: 1 }}
+            type='submit'
+            form='pay'
+            variant='contained'
+            size='small'
+          >
+            Pay Now
+          </Button>
+          {error && <Alert
+            sx={{ my: 1 }}
+            severity='error'
+          >
+            {error}
+          </Alert>}
+          {payments.map(payment =>
+            <Alert
+              sx={{ my: 1, wordBreak: 'break-all' }}
+              key={payment.hash}
+              severity='info'
+            >
+              {payment.hash}
+            </Alert>
+          )}
+        </Card>
       </Box>
     </MainLayout>
   )
