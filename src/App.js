@@ -5,6 +5,7 @@ import { createTheme } from '@mui/material/styles';
 import { grey, blueGrey } from '@mui/material/colors';
 import { ThemeProvider } from '@mui/material';
 import PaymentsView from 'components/PaymentsView';
+import SignaturesView from 'components/SignaturesView';
 
 const App = () => {
   const theme = createTheme({
@@ -18,6 +19,7 @@ const App = () => {
         <Routes>
           <Route path='/*' element={<Navigate to='/payments' />} />
           <Route path='/payments' element={<PaymentsView />} />
+          <Route path='/signatures' element={<SignaturesView />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

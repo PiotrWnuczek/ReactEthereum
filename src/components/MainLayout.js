@@ -6,9 +6,9 @@ const MainLayout = ({ children }) => (
   <Box sx={{ display: 'flex' }}>
     <SideMenu
       sx={{
-        width: { xs: 72, md: 162 }, '& .MuiDrawer-paper': {
+        width: { xs: 72, md: 172 }, '& .MuiDrawer-paper': {
           bgcolor: 'secondary.dark', justifyContent: 'space-between',
-          width: { xs: 72, md: 162 },
+          width: { xs: 72, md: 172 },
         },
       }}
       variant='permanent'

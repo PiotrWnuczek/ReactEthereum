@@ -5,23 +5,20 @@ import { Formik } from 'formik';
 import { ethers } from 'ethers';
 import MainLayout from 'components/MainLayout';
 
-const PaymentsView = () => {
+const SignaturesView = () => {
   const [error, setError] = useState();
-  const [payments, setPayments] = useState([]);
+  const [signatures, setSignatures] = useState([]);
 
-  const startPayment = async ({ ether, address }) => {
+  const signMessage = async ({ message }) => {
     try {
       if (!window.ethereum) throw new Error('No crypto wallet.');
       await window.ethereum.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
-      ethers.utils.getAddress(address);
-      const payment = await signer.sendTransaction({
-        to: address,
-        value: ethers.utils.parseEther(ether),
-      });
-      console.log({ ether, address, payment });
-      setPayments([...payments, payment]);
+      const signature = await signer.signMessage(message);
+      const address = await signer.getAddress();
+      console.log({ message, address, signature });
+      setSignatures([...signatures, { message, address, signature }]);
     } catch (error) {
       setError(error.message);
     }
@@ -34,14 +31,13 @@ const PaymentsView = () => {
           sx={{ mb: 1 }}
           variant='h5'
         >
-          Payments
+          Signatures
         </Typography>
         <Formik
-          initialValues={{ address: '', ether: '' }}
+          initialValues={{ message: '' }}
           onSubmit={(values) => {
-            values.address && values.ether ? startPayment({
-              address: values.address,
-              ether: values.ether,
+            values.message ? signMessage({
+              message: values.message,
             }) : setError('Wrong form values.');
           }}
         >
@@ -51,27 +47,16 @@ const PaymentsView = () => {
                 sx={{ my: 1 }}
                 onChange={handleChange}
                 value={values.address}
-                name='address'
-                placeholder='Address'
-                label='Address'
+                name='message'
+                placeholder='Message'
+                label='Message'
                 type='text'
                 variant='outlined'
                 size='small'
                 fullWidth
+                multiline
+                minRows={2}
                 autoFocus
-                required
-              />
-              <TextField
-                sx={{ my: 1 }}
-                onChange={handleChange}
-                value={values.ether}
-                name='ether'
-                placeholder='Ether'
-                label='Ether'
-                type='text'
-                variant='outlined'
-                size='small'
-                fullWidth
                 required
               />
             </form>
@@ -84,7 +69,7 @@ const PaymentsView = () => {
           variant='contained'
           size='small'
         >
-          Pay Now
+          Sign Message
         </Button>
         {error && <Alert
           sx={{ my: 1 }}
@@ -92,13 +77,15 @@ const PaymentsView = () => {
         >
           {error}
         </Alert>}
-        {payments.map(payment =>
+        {signatures.map((signature, idx) =>
           <Alert
             sx={{ my: 1, wordBreak: 'break-all' }}
-            key={payment.hash}
+            key={idx}
             severity='info'
           >
-            {payment.hash}
+            mssage: {signature.message} <br />
+            address: {signature.address} <br />
+            signature: {signature.signature}
           </Alert>
         )}
       </Box>
@@ -106,4 +93,4 @@ const PaymentsView = () => {
   )
 };
 
-export default PaymentsView;
+export default SignaturesView;
